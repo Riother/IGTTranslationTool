@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,7 @@ namespace IGTLocalizer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private JObject fileContent;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,12 +34,16 @@ namespace IGTLocalizer
             OpenFileDialog openfileDialog = new OpenFileDialog();
             openfileDialog.Filter = "JSON Files (*.json)|*.json|Text Files (*.txt)|*.txt)";
             if (openfileDialog.ShowDialog() == true)
-                fileViewer.Text = File.ReadAllText(openfileDialog.FileName);
+            {
+                String content = File.ReadAllText(openfileDialog.FileName);            
+                fileContent = JObject.Parse(content);
+                fileViewer.Text = content;
+            }
         }
 
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
-
+            fileEditor.Text = fileContent.ToString();
         }
     }
 }
