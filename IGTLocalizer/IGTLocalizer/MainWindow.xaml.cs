@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,13 @@ namespace IGTLocalizer
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OpenFile_Button(Object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openfileDialog = new OpenFileDialog();
+            if (openfileDialog.ShowDialog() == true)
+                txtEditor.Text = File.ReadAllText(openfileDialog.FileName);
         }
     }
 }
