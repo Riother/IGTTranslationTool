@@ -71,13 +71,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Client.cs" />
+    <Compile Include="Model\Client.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ClientJsonParser.cs" />
+    <Compile Include="Model\ClientLibrary.cs" />
     <Compile Include="Model\DetectedLanguage.cs" />
     <Compile Include="Model\ParsedJson.cs" />
     <Compile Include="Model\TranslationCaller.cs" />

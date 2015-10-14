@@ -8,19 +8,19 @@ namespace IGTLocalizer
 {
     public class Client
     {
-        public Dictionary<String, String> textVariables { get; set; }
+        public Dictionary<String, String> TextVariables { get; set; }
 
         public Client() {
-            this.textVariables = new Dictionary<string, string>();
+            this.TextVariables = new Dictionary<string, string>();
         }
 
         public Client(Dictionary<String, String> textVariables) {
-            this.textVariables = textVariables;
+            this.TextVariables = textVariables;
         }
 
         public bool AddVar(String key, String value){
-            bool valueUpdated = textVariables.Contains(new KeyValuePair<String, String>(key, value));
-            this.textVariables.Add(key, value);
+            bool valueUpdated = TextVariables.Contains(new KeyValuePair<String, String>(key, value));
+            this.TextVariables.Add(key, value);
             return valueUpdated;
         }
 
