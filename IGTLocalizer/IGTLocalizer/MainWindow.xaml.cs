@@ -30,8 +30,14 @@ namespace IGTLocalizer
         private void OpenFile_Button(Object sender, RoutedEventArgs e)
         {
             OpenFileDialog openfileDialog = new OpenFileDialog();
+            openfileDialog.Filter = "JSON Files (*.json)|*.json|Text Files (*.txt)|*.txt)";
             if (openfileDialog.ShowDialog() == true)
-                txtEditor.Text = File.ReadAllText(openfileDialog.FileName);
+                fileViewer.Text = File.ReadAllText(openfileDialog.FileName);
+        }
+
+        private void TranslateFile_Button(Object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
