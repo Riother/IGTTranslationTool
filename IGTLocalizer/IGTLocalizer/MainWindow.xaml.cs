@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using IGTLocalizer.Model;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace IGTLocalizer
 {
@@ -23,10 +25,13 @@ namespace IGTLocalizer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private JObject fileContent;
+        private JToken fileContentToken;
+        private JObject fileContentObject;
+        private TranslationCaller translator;
         public MainWindow()
         {
             InitializeComponent();
+            translator = new TranslationCaller();
         }
 
         private void OpenFile_Button(Object sender, RoutedEventArgs e)
@@ -36,14 +41,33 @@ namespace IGTLocalizer
             if (openfileDialog.ShowDialog() == true)
             {
                 String content = File.ReadAllText(openfileDialog.FileName);            
-                fileContent = JObject.Parse(content);
+                fileContentToken = JToken.Parse(content);
+                fileContentObject = JObject.Parse(content);
                 fileViewer.Text = content;
             }
         }
 
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
-            fileEditor.Text = fileContent.ToString();
+            JObject outer = fileContentToken.Value<JObject>();
+            JObject inner = fileContentToken["default"].Value<JObject>();
+
+            List<string> outerProperties = outer.Properties().Select(p => p.Name).ToList();
+            List<string> innerProperties = inner.Properties().Select(p => p.Name).ToList();
+
+            string[] singleLine = new string[1];
+            foreach(string o in outerProperties)
+            {
+                foreach(string i in innerProperties)
+                {
+                    singleLine[0] = fileContentObject[o][i].ToString();
+                    translator.textSent = singleLine;
+                    singleLine = translator.Translate("en", "es").text;
+                    fileContentObject[o][i] = singleLine[0];
+                }
+            }
+
+            fileEditor.Text = fileContentObject.ToString();
         }
     }
 }
