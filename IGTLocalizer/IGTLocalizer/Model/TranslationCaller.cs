@@ -8,83 +8,77 @@ namespace IGTLocalizer.Model
     class TranslationCaller
     {
         private static string key = "trnsl.1.1.20151012T200733Z.8237c82a081681fe.61c963349cac1614d2ac8b43adde3cf5981d4750";// This key is needed to access Yandex API. 
-        public string[] textSent { get; set; } // not longer then 10000 charaters
 
-        public ParsedJson Translate(string from, string to)
+        //TODO check character length is not over 10000
+        //when translating a line you need to have the &text= before the text 
+        //
+        public string TranslateLine(string content, string from, string to, string additional = "")
         {
-            string connected = "";
-            int linecount = 0;
-            string parsed = null;
-            foreach (string context in textSent)
-            {
-                if (linecount > 0 && linecount < textSent.Length - 1)
-                {
-                    connected += "%3F&text=" + context.Replace(' ', '+');
-                }
-                else
-                {
-                    connected += "&text=" + context.Replace(' ', '+');
-                }
-
-                linecount++;
-
-            }
-
-            Stream response = GenerateRequest(connected, from, to, false);
-            StreamReader reader = new StreamReader(response, Encoding.UTF8);
-            Console.WriteLine("Response from Yandex.com");
-            Console.WriteLine(parsed = reader.ReadToEnd());
-            ParsedJson ret = JsonConvert.DeserializeObject<ParsedJson>(parsed);
-            response.Close();
-            reader.Close();
-            return ret;
+            string text = additional + "&text=" + content.Replace(' ', '+');
+            return GetTranslationFromRequest(text, from, to, false);
         }
 
-
-        public DetectedLanguage Detect()
-        {
-            string connected = "";
-            string parsed = "";
-            int linecount = 0;
-            foreach (string context in textSent)
-            {
-                if (linecount > 0 && linecount < textSent.Length - 1)
-                {
-                    connected += "%3F&text=" + context.Replace(' ', '+');
+        public string[] TranslateMultiLines(string[] lines, string from, string to) {
+            string[] translated = lines;
+            int numLines = lines.Length;
+            for(int i = 0; i < numLines; i ++){
+                if(i > 0 && i < numLines - 1){
+                    translated[i] = TranslateLine(lines[i].Replace(' ', '+'), from, to, "%3F");
+                }else{
+                    translated[i] = TranslateLine(lines[i].Replace(' ', '+'), from, to);
                 }
-                else
-                {
-                    connected += "&text=" + context.Replace(' ', '+');
-                }
-
-                linecount++;
-
             }
-
-            Stream response = GenerateRequest(connected, null, null, true);
-            StreamReader reader = new StreamReader(response, Encoding.UTF8);
-            Console.WriteLine("Response from Yandex.com");
-            Console.WriteLine(parsed = reader.ReadToEnd());
-            DetectedLanguage ret = JsonConvert.DeserializeObject<DetectedLanguage>(parsed);
-            response.Close();
-            reader.Close();
-            return ret;
+            return translated;
         }
 
-
-        Stream GenerateRequest(string text, string langFrom, string langTo, bool detect)
+        public DetectedLanguage Detect(string line)
         {
-            HttpWebRequest request = null;
-            if (detect)
-                request = (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/detect?key=" + key + "" + text);
-            else
-                request = (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + key + "&lang=" +
-                    langFrom + "-" + langTo + "" + text);
+            return JsonConvert.DeserializeObject<DetectedLanguage>(GetTranslationFromRequest(line, null, null, true));
+        }
+
+        //generates a translation request and returns the response
+        private HttpWebResponse GetTranslationResponse(string text, string langFrom, string langTo, bool detect)
+        {
+            HttpWebRequest request = (detect) ? (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/detect?key=" + key + "" + text) :
+                (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + key + "&lang=" + langFrom + "-" + langTo + "" + text);
             request.Method = "GET";
             request.AllowAutoRedirect = true;
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            return response.GetResponseStream();
+            return (HttpWebResponse)request.GetResponse();
         }
+
+        private string GetTranslationFromRequest(string text, string langFrom, string langTo, bool detect)
+        {
+            //make request and get response
+            HttpWebResponse translationResponse = GetTranslationResponse(text, langFrom, langTo, detect);
+            StreamReader responseReader = new StreamReader(translationResponse.GetResponseStream(), Encoding.UTF8);
+
+            //parse response into string
+            string parsed = responseReader.ReadToEnd();
+            Console.WriteLine("Response from Yandex.com: \n\n" + parsed);
+
+            //clean up
+            translationResponse.Close();
+            responseReader.Close();
+
+            return parsed;
+        }
+
+        //string connected = "";
+        //int linecount = 0;
+        //foreach (string context in lines)
+        //{
+        //    if (linecount > 0 && linecount < textSent.Length - 1)
+        //    {
+        //        connected += "%3F&text=" + context.Replace(' ', '+');
+        //    }
+        //    else
+        //    {
+        //        connected += "&text=" + context.Replace(' ', '+');
+        //    }
+
+        //    linecount++;
+        //}
+        
     }
 }
