@@ -47,23 +47,24 @@ namespace IGTLocalizer
             }
         }
 
+        string startingLangCode = "en";
+        string translatedLangCode = "es";
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
+            
             JObject outer = fileContentToken.Value<JObject>();
             JObject inner = fileContentToken["default"].Value<JObject>();
 
-            List<string> outerProperties = outer.Properties().Select(p => p.Name).ToList();
-            List<string> innerProperties = inner.Properties().Select(p => p.Name).ToList();
+            List<string> clients = outer.Properties().Select(p => p.Name).ToList();
+            List<string> properties = inner.Properties().Select(p => p.Name).ToList();
 
-            string[] singleLine = new string[1];
-            foreach(string o in outerProperties)
+
+            foreach(string client in clients)
             {
-                foreach(string i in innerProperties)
+                foreach(string prop in properties)
                 {
-                    singleLine[0] = fileContentObject[o][i].ToString();
-                    translator.textSent = singleLine;
-                    singleLine = translator.Translate("en", "es").text;
-                    fileContentObject[o][i] = singleLine[0];
+                    fileContentObject[client][prop] = 
+                        translator.TranslateLine(fileContentObject[client][prop].ToString(), startingLangCode, translatedLangCode);
                 }
             }
 
