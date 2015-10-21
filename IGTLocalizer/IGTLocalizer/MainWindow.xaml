@@ -31,8 +31,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <!--<Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Left" Margin="100,0,0,0"/>
-            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Right" Margin="0,0,100,0"/>-->
+            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1">
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New User" IsChecked="True"/>
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing User" />
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="addLanguageRadioButton" Content="Add New Laguage" />
+            </StackPanel>
+            <!--<Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Right" Margin="0,0,100,0"/>-->
         </Grid>
 
         <Grid x:Name="UserControls" Grid.Row="2" ShowGridLines="True" Margin="-1,0,1,0">
