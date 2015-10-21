@@ -25,9 +25,14 @@
             <Label Foreground="#007CAA" FontSize="36" VerticalAlignment="Center" FontWeight="Bold" Content="{Binding Path=Title, Mode=OneWay, FallbackValue='JSON Localizer'}"/>
         </StackPanel>
 
-        <Grid Grid.Row="1">
-            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Left" Margin="100,0,0,0"/>
-            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Right" Margin="0,0,100,0"/>
+        <Grid Grid.Row="1" ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <!--<Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Left" Margin="100,0,0,0"/>
+            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="30" Width="70" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Right" Margin="0,0,100,0"/>-->
         </Grid>
 
         <Grid x:Name="UserControls" Grid.Row="2" ShowGridLines="True" Margin="-1,0,1,0">
