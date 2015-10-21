@@ -11,7 +11,6 @@ namespace IGTLocalizer.Model
 
         //TODO check character length is not over 10000
         //when translating a line you need to have the &text= before the text 
-        //
         public string TranslateLine(string content, string from, string to, string additional = "")
         {
             string text = additional + "&text=" + content.Replace(' ', '+');
@@ -64,21 +63,5 @@ namespace IGTLocalizer.Model
             return parsed;
         }
 
-        //string connected = "";
-        //int linecount = 0;
-        //foreach (string context in lines)
-        //{
-        //    if (linecount > 0 && linecount < textSent.Length - 1)
-        //    {
-        //        connected += "%3F&text=" + context.Replace(' ', '+');
-        //    }
-        //    else
-        //    {
-        //        connected += "&text=" + context.Replace(' ', '+');
-        //    }
-
-        //    linecount++;
-        //}
-        
     }
 }
