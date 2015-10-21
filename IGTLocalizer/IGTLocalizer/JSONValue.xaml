@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="IGTLocalizer.JSONValue"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IGTLocalizer"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300">
+
+    <Grid Height="100">
+        <Grid Height="80" Width="auto" VerticalAlignment="Top" Margin="10">
+            <Grid.Background>
+                <SolidColorBrush Color="White"/>
+            </Grid.Background>
+
+            <Grid Height="60" Width="auto" Margin="10">
+                <Border BorderBrush="Black" BorderThickness="2" />
+                <TextBox Margin="2" Name="myValue" Text="Demo" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</UserControl>
