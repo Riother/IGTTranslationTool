@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using IGTLocalizer.Widgets;
 
 namespace IGTLocalizer
 {
@@ -20,9 +21,12 @@ namespace IGTLocalizer
     /// </summary>
     public partial class AddLanguage : UserControl
     {
+        public LanguageSelector ls;
         public AddLanguage()
         {
             InitializeComponent();
+            ls = new LanguageSelector();
+            myGrid.Children.Add(ls);
         }
     }
 }

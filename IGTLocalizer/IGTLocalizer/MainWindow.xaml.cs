@@ -29,6 +29,7 @@ namespace IGTLocalizer
         private TranslationCaller translator;
         private List<string> clients;
         private List<string> properties;
+        private AddLanguage toTranslateLang;
         public MainWindow()
         {
             InitializeComponent();
@@ -69,13 +70,13 @@ namespace IGTLocalizer
         }
 
         string startingLangCode = "en";
-        string translatedLangCode = "es";
+        //string translatedLangCode = "es";
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
             foreach(string p in properties)
             {
                 fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, translatedLangCode);
+                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
 
                 JSONValue eValue = new JSONValue(false);
                 eValue.myValue.Text = fileContentObject["default"][p].ToString();
@@ -107,8 +108,8 @@ namespace IGTLocalizer
 
         private void AddNewLanguage(Object sender, EventArgs e)
         {
-            AddLanguage addLang = new AddLanguage();
-            AddUserControlStep3(addLang);
+            toTranslateLang = new AddLanguage();
+            AddUserControlStep3(toTranslateLang);
         }
 
         private void AddUserControlStep3(UserControl uc)
