@@ -18,21 +18,24 @@ namespace IGTLocalizer.Model
             return GetTranslationFromRequest(text, from, to, false);
         }
         string delimiter = "!&#*@($)%_";
-        public string[] TranslateMultiLines(string[] lines, string from, string to) {
+        public string[] TranslateMultiLines(string[] lines, string from, string to)
+        {
             string toSend = "";
             int numLines = lines.Length;
-            for(int i = 0; i < numLines; i ++){
+            for (int i = 0; i < numLines; i++)
+            {
                 if (i >= lines.Length - 1)
                 {
                     toSend += lines[i];
                 }
-                else {
+                else
+                {
                     toSend += lines[i] + delimiter;
                 }
             }
 
             string translated = TranslateLine(toSend, from, to);
-            string[] translatedLines = translated.Split(new string[]{delimiter}, StringSplitOptions.RemoveEmptyEntries);
+            string[] translatedLines = translated.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
             return translatedLines;
         }
 
@@ -52,6 +55,9 @@ namespace IGTLocalizer.Model
             return (HttpWebResponse)request.GetResponse();
         }
 
+        string relevantTextStartString = "\"text\":";
+        private static char[] startTrim = new char[] { '{', '[', '"' };
+        private static char[] endTrim = new char[] { '}', ']', '"' };
         private string GetTranslationFromRequest(string text, string langFrom, string langTo, bool detect)
         {
             //make request and get response
@@ -60,7 +66,7 @@ namespace IGTLocalizer.Model
 
             //parse response into string
             string parsed = responseReader.ReadToEnd();
-            parsed = parsed.Substring(parsed.IndexOf("\"text\":")).TrimStart('[').TrimEnd(']');
+            parsed = parsed.Substring(parsed.IndexOf(relevantTextStartString) + relevantTextStartString.Length).TrimStart(startTrim).TrimEnd(endTrim);
             Console.WriteLine("Response from Yandex.com: \n\n" + parsed);
 
             //clean up
@@ -85,6 +91,6 @@ namespace IGTLocalizer.Model
 
         //    linecount++;
         //}
-        
+
     }
 }
