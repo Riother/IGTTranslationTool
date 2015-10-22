@@ -54,6 +54,10 @@
                 <!--<TextBox IsReadOnly="True" Name="fileEditor" Grid.Column="2"/>-->
             </Grid>
         </ScrollViewer>
+
+        <Grid Name="testGrid" Grid.Row="3">
+            
+        </Grid>
     </Grid>
 </Window>
 

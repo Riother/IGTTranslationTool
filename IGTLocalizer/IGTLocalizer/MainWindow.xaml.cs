@@ -1,4 +1,5 @@
 ﻿using IGTLocalizer.Model;
+using IGTLocalizer.Widgets;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
@@ -30,10 +31,13 @@ namespace IGTLocalizer
         private TranslationCaller translator;
         private List<string> clients;
         private List<string> properties;
+        LanguageSelector ls;
         public MainWindow()
         {
             InitializeComponent();
             translator = new TranslationCaller();
+            ls = new LanguageSelector();
+            testGrid.Children.Add(ls);
         }
 
         private void OpenFile_Button(Object sender, RoutedEventArgs e)
@@ -76,7 +80,7 @@ namespace IGTLocalizer
             foreach(string p in properties)
             {
                 fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, translatedLangCode);
+                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, ls.selectLang);
 
                 JSONValue eValue = new JSONValue(false);
                 eValue.myValue.Text = fileContentObject["default"][p].ToString();
