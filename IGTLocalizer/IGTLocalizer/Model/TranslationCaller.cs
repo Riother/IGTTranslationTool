@@ -17,18 +17,23 @@ namespace IGTLocalizer.Model
             string text = additional + "&text=" + content.Replace(' ', '+');
             return GetTranslationFromRequest(text, from, to, false);
         }
-
+        string delimiter = "!&#*@($)%_";
         public string[] TranslateMultiLines(string[] lines, string from, string to) {
-            string[] translated = lines;
+            string toSend = "";
             int numLines = lines.Length;
             for(int i = 0; i < numLines; i ++){
-                if(i > 0 && i < numLines - 1){
-                    translated[i] = TranslateLine(lines[i].Replace(' ', '+'), from, to, "%3F");
-                }else{
-                    translated[i] = TranslateLine(lines[i].Replace(' ', '+'), from, to);
+                if (i >= lines.Length - 1)
+                {
+                    toSend += lines[i];
+                }
+                else {
+                    toSend += lines[i] + delimiter;
                 }
             }
-            return translated;
+
+            string translated = TranslateLine(toSend, from, to);
+            string[] translatedLines = translated.Split(new string[]{delimiter}, StringSplitOptions.RemoveEmptyEntries);
+            return translatedLines;
         }
 
         public DetectedLanguage Detect(string line)
