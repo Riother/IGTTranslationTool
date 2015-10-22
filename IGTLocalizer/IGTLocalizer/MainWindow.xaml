@@ -33,11 +33,12 @@
             </Grid.ColumnDefinitions>
             <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <StackPanel Grid.Column="1">
-                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New User" IsChecked="True"/>
-                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing User" />
-                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="addLanguageRadioButton" Content="Add New Laguage" />
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New User" Click="AddNewUser"/>
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing User" Click="UpdateUser" />
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="addLanguageRadioButton" Content="Add New Laguage" Click="AddNewLanguage" />
             </StackPanel>
-            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2"/>
+            <StackPanel Name="Step3" Grid.Column="2"></StackPanel>
+            <!--<Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2"/-->
         </Grid>
 
         <ScrollViewer Grid.Row="2">
