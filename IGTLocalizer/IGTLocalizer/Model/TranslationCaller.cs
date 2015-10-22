@@ -60,6 +60,7 @@ namespace IGTLocalizer.Model
 
             //parse response into string
             string parsed = responseReader.ReadToEnd();
+            parsed = parsed.Substring(parsed.IndexOf("\"text\":")).TrimStart('[').TrimEnd(']');
             Console.WriteLine("Response from Yandex.com: \n\n" + parsed);
 
             //clean up
