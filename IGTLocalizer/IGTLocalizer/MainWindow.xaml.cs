@@ -16,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Linq;
 
 namespace IGTLocalizer
 {
@@ -92,6 +91,38 @@ namespace IGTLocalizer
             //}
 
             //fileEditor.Text = fileContentObject.ToString();
+        }
+
+        private void AddNewUser(Object sender, EventArgs e)
+        {
+            AddCustomer addCustID = new AddCustomer();
+            AddUserControlStep3(addCustID);
+        }
+
+        private void UpdateUser(Object sender, EventArgs e)
+        {
+            UpdateCustomer updateCust = new UpdateCustomer();
+            AddUserControlStep3(updateCust);
+        }
+
+        private void AddNewLanguage(Object sender, EventArgs e)
+        {
+            AddLanguage addLang = new AddLanguage();
+            AddUserControlStep3(addLang);
+        }
+
+        private void AddUserControlStep3(UserControl uc)
+        {
+            if (Step3.Children.Count > 0)
+            {
+                if (Step3.Children[0].GetType() != uc.GetType())
+                {
+                    Step3.Children.Clear();
+                    Step3.Children.Add(uc);
+                }
+            }
+            else
+                Step3.Children.Add(uc);
         }
     }
 }
