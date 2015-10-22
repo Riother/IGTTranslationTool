@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="200">
-    <Grid>
+    <StackPanel Orientation="Horizontal">
         <Label>Language:</Label>
-        <ComboBox Width="100" Height="30" Margin="100,0,0,0"></ComboBox>
-    </Grid>
+        <Grid Name="myGrid"/>
+        <!--<ComboBox Width="100" Height="30" Margin="100,0,0,0"></ComboBox>-->
+    </StackPanel>
 </UserControl>
