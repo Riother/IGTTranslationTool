@@ -7,6 +7,6 @@
              d:DesignHeight="30" d:DesignWidth="200">
     <Grid>
         <Label>Customer ID:</Label>
-        <ComboBox Width="100" Height="30" Margin="100,0,0,0"></ComboBox>
+        <ComboBox Name="UpdateCustBox" Width="100" Height="30" Margin="100,0,0,0" SelectionChanged="UpdateCustBox_SelectionChanged"/>
     </Grid>
 </UserControl>
