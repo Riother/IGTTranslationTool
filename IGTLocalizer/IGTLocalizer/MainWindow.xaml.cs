@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,10 +31,14 @@ namespace IGTLocalizer
         private List<string> clients;
         private List<string> properties;
         private AddLanguage toTranslateLang;
+        private ObservableCollection<string> custIDs;
+        UpdateCustomer updateCust;
+        public event EventHandler ChangeCustomerContent;
         public MainWindow()
         {
             InitializeComponent();
             translator = new TranslationCaller();
+            custIDs = new ObservableCollection<string>();
         }
 
         private void OpenFile_Button(Object sender, RoutedEventArgs e)
@@ -42,28 +47,30 @@ namespace IGTLocalizer
             openfileDialog.Filter = "JSON Files (*.json)|*.json";
             if (openfileDialog.ShowDialog() == true)
             {
+                custIDs.Clear();
                 String content = File.ReadAllText(openfileDialog.FileName);            
                 fileContentToken = JToken.Parse(content);
                 fileContentObject = JObject.Parse(content);
 
                 JObject outer = fileContentToken.Value<JObject>();
+
+                for(int i = 0; i < outer.Count; i++)
+                {
+                   custIDs.Add(outer.Children().ElementAt(i).Path);
+                }
                 JObject inner = fileContentToken["default"].Value<JObject>();
 
                 clients = outer.Properties().Select(p => p.Name).ToList();
                 properties = inner.Properties().Select(p => p.Name).ToList();
 
                 StkJSONProperties.Children.Clear();
-                StkOriginalValues.Children.Clear();
                 foreach(string p in properties)
                 {
                     JSONProperty prop = new JSONProperty();
                     prop.property.Content = p;
                     StkJSONProperties.Children.Add(prop);
-
-                    JSONValue oValue = new JSONValue(true);
-                    oValue.myValue.Text = fileContentObject["default"][p].ToString();
-                    StkOriginalValues.Children.Add(oValue);
                 }
+                populateLeftSide("default");
 
                 //fileViewer.Text = content;
             }
@@ -71,6 +78,8 @@ namespace IGTLocalizer
 
         string startingLangCode = "en";
         //string translatedLangCode = "es";
+
+
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
             foreach(string p in properties)
@@ -102,9 +111,29 @@ namespace IGTLocalizer
 
         private void UpdateUser(Object sender, EventArgs e)
         {
-            UpdateCustomer updateCust = new UpdateCustomer();
+            updateCust = new UpdateCustomer(this);
+            updateCust.UpdateCustBox.ItemsSource = custIDs;
+            updateCust.UpdateCustBox.SelectedIndex =  0;
+            
             AddUserControlStep3(updateCust);
         }
+
+        private void ComboBox_ChangeCustomerContent(object sender, RoutedEventArgs e)
+        {
+            var handler = ChangeCustomerContent;
+            if(handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+        //private void UpdateCust_DropDownClosed(object sender, EventArgs e)
+        //{
+        //    if(updateCust  != null)
+        //    {
+        //        //string id = updateCust.ItemSelected;
+        //        populateLeftSide(id);
+        //    }
+        //}
 
         private void AddNewLanguage(Object sender, EventArgs e)
         {
@@ -124,6 +153,33 @@ namespace IGTLocalizer
             }
             else
                 Step3.Children.Add(uc);
+        }
+
+        private void populateLeftSide(string clientId)
+        {
+            StkOriginalValues.Children.Clear();
+            foreach (string p in properties)
+            {
+                JSONValue oValue = new JSONValue(true);
+                oValue.myValue.Text = fileContentObject[clientId][p].ToString();
+                StkOriginalValues.Children.Add(oValue);
+            }
+        }
+
+        private void populateRightSide(string clientId)
+        {
+            StkEditableValues.Children.Clear();
+            foreach (string p in properties)
+            {
+                JSONValue oValue = new JSONValue(false);
+                oValue.myValue.Text = fileContentObject[clientId][p].ToString();
+                StkEditableValues.Children.Add(oValue);
+            }
+        }
+        public void clientChanged(string clientId)
+        {
+            populateLeftSide(clientId);
+            populateRightSide(clientId);
         }
     }
 }
