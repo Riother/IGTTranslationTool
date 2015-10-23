@@ -101,6 +101,7 @@ namespace IGTLocalizer
 
         private void TranslateFile(object sender, ExecutedRoutedEventArgs e)
         {
+            StkEditableValues.Children.Clear();
             foreach(string p in properties)
             {
                 fileContentObject["default"][p] =
