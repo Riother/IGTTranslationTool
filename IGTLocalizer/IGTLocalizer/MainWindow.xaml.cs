@@ -31,6 +31,7 @@ namespace IGTLocalizer
         private List<string> clients;
         private List<string> properties;
         private AddLanguage toTranslateLang;
+        private String[] TranslatedValues;
         private ObservableCollection<string> custIDs;
         UpdateCustomer updateCust;
         public event EventHandler ChangeCustomerContent;
@@ -77,31 +78,6 @@ namespace IGTLocalizer
         }
 
         string startingLangCode = "en";
-        //string translatedLangCode = "es";
-
-
-        private void TranslateFile_Button(Object sender, RoutedEventArgs e)
-        {
-            foreach(string p in properties)
-            {
-                fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
-
-                JSONValue eValue = new JSONValue(false);
-                eValue.myValue.Text = fileContentObject["default"][p].ToString();
-                StkEditableValues.Children.Add(eValue);
-            }
-            //foreach(string client in clients)
-            //{
-            //    foreach(string prop in properties)
-            //    {
-            //        fileContentObject[client][prop] = 
-            //            translator.TranslateLine(fileContentObject[client][prop].ToString(), startingLangCode, translatedLangCode);
-            //    }
-            //}
-
-            //fileEditor.Text = fileContentObject.ToString();
-        }
 
         private void CanTranslateFile(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -110,26 +86,21 @@ namespace IGTLocalizer
 
         private void TranslateFile(object sender, ExecutedRoutedEventArgs e)
         {
-            StkEditableValues.Children.Clear();
-            foreach(string p in properties)
+            TranslatedValues = new String[properties.Count];
+            for(int i = 0; i < TranslatedValues.Length; i++)
             {
-                fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
+                TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+            }
 
+            TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, toTranslateLang.ls.selectLang);
+
+            StkEditableValues.Children.Clear();
+            foreach (string p in TranslatedValues)
+            {
                 JSONValue eValue = new JSONValue(false);
-                eValue.myValue.Text = fileContentObject["default"][p].ToString();
+                eValue.myValue.Text = p;
                 StkEditableValues.Children.Add(eValue);
             }
-            //foreach(string client in clients)
-            //{
-            //    foreach(string prop in properties)
-            //    {
-            //        fileContentObject[client][prop] = 
-            //            translator.TranslateLine(fileContentObject[client][prop].ToString(), startingLangCode, translatedLangCode);
-            //    }
-            //}
-
-            //fileEditor.Text = fileContentObject.ToString();
         }
 
         private void AddNewUser(Object sender, EventArgs e)
