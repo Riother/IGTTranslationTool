@@ -10,8 +10,11 @@
         MinHeight="600" MinWidth="800"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Icon="Assets/logo.ico"
-        >
+        Icon="Assets/logo.ico">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="TranslateFile" CanExecute="CanTranslateFile" />
+    </Window.CommandBindings>
+    
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="60px" MinHeight="20px" MaxHeight="100px"/>

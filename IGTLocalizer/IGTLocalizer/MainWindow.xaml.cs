@@ -103,6 +103,35 @@ namespace IGTLocalizer
             //fileEditor.Text = fileContentObject.ToString();
         }
 
+        private void CanTranslateFile(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void TranslateFile(object sender, ExecutedRoutedEventArgs e)
+        {
+            StkEditableValues.Children.Clear();
+            foreach(string p in properties)
+            {
+                fileContentObject["default"][p] =
+                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
+
+                JSONValue eValue = new JSONValue(false);
+                eValue.myValue.Text = fileContentObject["default"][p].ToString();
+                StkEditableValues.Children.Add(eValue);
+            }
+            //foreach(string client in clients)
+            //{
+            //    foreach(string prop in properties)
+            //    {
+            //        fileContentObject[client][prop] = 
+            //            translator.TranslateLine(fileContentObject[client][prop].ToString(), startingLangCode, translatedLangCode);
+            //    }
+            //}
+
+            //fileEditor.Text = fileContentObject.ToString();
+        }
+
         private void AddNewUser(Object sender, EventArgs e)
         {
             AddCustomer addCustID = new AddCustomer();
