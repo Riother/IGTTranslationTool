@@ -152,7 +152,10 @@ namespace IGTLocalizer
             json += "}";
             System.IO.File.WriteAllText(path, json);
         }
+<<<<<<< HEAD
 >>>>>>> saving files
+=======
+>>>>>>> ba6bf6bc3063d871396da97caf5db1eb69dfd5f8
 
         private void CanTranslateFile(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -161,6 +164,7 @@ namespace IGTLocalizer
 
         private void TranslateFile(object sender, ExecutedRoutedEventArgs e)
         {
+<<<<<<< HEAD
 <<<<<<< HEAD
             TranslatedValues = new String[properties.Count];
             for(int i = 0; i < TranslatedValues.Length; i++)
@@ -186,6 +190,19 @@ namespace IGTLocalizer
             foreach (string p in TranslatedValues)
             {
 >>>>>>> saving files
+=======
+
+            string[] TranslatedValues = new String[properties.Count];
+            for (int i = 0; i < TranslatedValues.Length; i++)
+            {
+                TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+            }
+            TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, toTranslateLang.ls.selectLang);
+            
+            StkEditableValues.Children.Clear();
+            foreach (string p in TranslatedValues)
+            {
+>>>>>>> ba6bf6bc3063d871396da97caf5db1eb69dfd5f8
                 JSONValue eValue = new JSONValue(false);
                 eValue.myValue.Text = p;
                 StkEditableValues.Children.Add(eValue);
