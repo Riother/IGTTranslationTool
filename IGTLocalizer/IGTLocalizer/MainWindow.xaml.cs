@@ -31,7 +31,6 @@ namespace IGTLocalizer
         private List<string> clients;
         private List<string> properties;
         private AddLanguage toTranslateLang;
-        private String[] TranslatedValues;
         private ObservableCollection<string> custIDs;
         private AddCustomer addCustID;
         UpdateCustomer updateCust;
@@ -116,10 +115,27 @@ namespace IGTLocalizer
         //object is surrounded by {}
 
 
-        String toSave = "{0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}}";
         private void SaveFile_Button(Object sender, RoutedEventArgs e) {
 
-            string path = currDir + "\\" + fileName + "1.json";
+            Stream myStream;
+            SaveFileDialog saveFile = new SaveFileDialog();
+
+            saveFile.Filter = "JSON Files (*.json)|*.json";
+
+            if (saveFile.ShowDialog() == true)
+            {
+                if ((myStream = saveFile.OpenFile()) != null)
+                {
+                    string json = GetEditedFileContent();
+                    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
+                    myStream.Write(bytes, 0, bytes.Length);
+                    myStream.Flush();
+                    myStream.Close();
+                }
+            }
+        }
+
+        private string GetEditedFileContent() {
             string quote = "\"";
 
             string json = "{";
@@ -133,9 +149,10 @@ namespace IGTLocalizer
                 }
                 json += "\n\t}\n";
 
-                if (radioSelection == 1 && clients.IndexOf(c) == (clients.Count - 1) ) {
+                if (radioSelection == 1 && clients.IndexOf(c) == (clients.Count - 1))
+                {
                     newCustName = addCustID.CustomerID.Value.ToString();
-                    
+
                     json += "\n\t" + quote + newCustName + quote + ":{";
                     foreach (string p in properties)
                     {
@@ -144,11 +161,12 @@ namespace IGTLocalizer
                     json += "\n\t}\n";
                 }
             }
-            if (newCustName != null) { 
+            if (newCustName != null)
+            {
                 clients.Add(newCustName);
             }
             json += "}";
-            System.IO.File.WriteAllText(path, json);
+            return json;
         }
 
         private void CanTranslateFile(object sender, CanExecuteRoutedEventArgs e)
