@@ -17,7 +17,7 @@ namespace IGTLocalizer.Model
             string text = additional + "&text=" + content.Replace(' ', '+');
             return GetTranslationFromRequest(text, from, to, false);
         }
-        string delimiter = " (╯°□°)╯︵ ┻━┻ (-_-!*)";//" !#*@($)%_";
+        string delimiter = "||||||||";//" !#*@($)%_";
         public string[] TranslateMultiLines(string[] lines, string from, string to)
         {
             string toSend = "";
