@@ -36,32 +36,49 @@
             </Grid.ColumnDefinitions>
             <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <StackPanel Grid.Column="1">
-                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New User" Click="AddNewUser"/>
-                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing User" Click="UpdateUser" />
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New Lottery" Click="AddNewUser"/>
+                <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing Lottery" Click="UpdateUser" />
                 <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="addLanguageRadioButton" Content="Add New Laguage" Click="AddNewLanguage" />
             </StackPanel>
             <StackPanel Name="Step3" Grid.Column="2"></StackPanel>
             <!--<Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Click="TranslateFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2"/-->
         </Grid>
 
-        <ScrollViewer Grid.Row="2">
-            <Grid x:Name="UserControls" ShowGridLines="True" Margin="-1,0,1,0">
+        <!--<ScrollViewer Grid.Row="2">-->
+            <Grid Grid.Row="2" x:Name="UserControls" ShowGridLines="True" Margin="-1,0,1,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="16"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel x:Name="StkJSONProperties"/>
-                <StackPanel x:Name="StkOriginalValues" Grid.Column="1"/>
-                <StackPanel x:Name="StkEditableValues" Grid.Column="2"/>
-                <!--<TextBox IsReadOnly="True" Name="fileViewer" Grid.Column="1"/>-->
-                <!--<TextBox IsReadOnly="True" Name="fileEditor" Grid.Column="2"/>-->
-            </Grid>
-        </ScrollViewer>
 
-        <StackPanel Grid.Row="3" x:Name="Step4" Orientation="Horizontal">
-            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Save File" Click="SaveFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </StackPanel>
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="0" Content="Properties"/>
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="1" Content="Original Values"/>
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="2" Content="Editable Values"/>
+            </Grid>
+
+            <ScrollViewer Grid.Row="1">
+                <Grid ShowGridLines="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="2" x:Name="StkJSONProperties"/>
+                    <StackPanel Grid.Row="2" x:Name="StkOriginalValues" Grid.Column="1"/>
+                    <StackPanel Grid.Row="2" x:Name="StkEditableValues" Grid.Column="2"/>
+                </Grid>
+            </ScrollViewer>
+            </Grid>
+
+            <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="200" Content="Save File" Click="SaveFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3"/>
     </Grid>
 </Window>
 

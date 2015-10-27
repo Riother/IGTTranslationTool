@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="200">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Label Content="Language:"/>
-            <Grid x:Name="myGrid"/>
-        </StackPanel>
-        <Button Grid.Row="1" FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Command="ApplicationCommands.New" Margin="50,0"/>
+             d:DesignHeight="100" d:DesignWidth="266">
+    <Grid Height="100">
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label FontSize="14" VerticalAlignment="Center" Content="Language:" Margin="15,0,5,0"/>
+            <Grid Height="28" Margin="100,0,0,0" x:Name="myGrid"/>
+            <Button Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Command="ApplicationCommands.New"/>
+        </Grid>
     </Grid>
 </UserControl>

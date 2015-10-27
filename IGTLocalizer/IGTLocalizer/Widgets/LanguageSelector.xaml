@@ -10,7 +10,7 @@
     <Grid>
         <StackPanel Orientation="Horizontal">
             <ComboBox x:Name="SelectALanguage"
-                  SelectionChanged="language_SelectionChanged">
+                  SelectionChanged="language_SelectionChanged" FontSize="14">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=Key}" />

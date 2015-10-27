@@ -12,7 +12,7 @@
                 <SolidColorBrush Color="White"/>
             </Grid.Background>
 
-            <Grid Background="#007CAA" Height="60" Width="150">
+            <Grid Background="Gray" Height="60" Width="150">
                 <Border BorderBrush="Black" BorderThickness="2" />
                 <Label Foreground="White" Name="property" Content="Demo" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
             </Grid>
