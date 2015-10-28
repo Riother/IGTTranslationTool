@@ -145,7 +145,7 @@ namespace IGTLocalizer
                 json += "\n\t" + quote + c + quote + ":{";
                 foreach (string p in properties)
                 {
-                    json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text + quote + ",";
+                    json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text.Replace("\n","\\n") + quote + ",";
                 }
                 json += "\n\t}\n";
 
@@ -156,7 +156,7 @@ namespace IGTLocalizer
                     json += "\n\t" + quote + newCustName + quote + ":{";
                     foreach (string p in properties)
                     {
-                        json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text + quote + ",";
+                        json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text.Replace("\n","\\n") + quote + ",";
                     }
                     json += "\n\t}\n";
                 }
