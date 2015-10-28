@@ -73,7 +73,8 @@ namespace IGTLocalizer.Widgets
             {"Thai", "th"},
             //{"Turkish", "tr"},
             {"Ukrainian", "uk"},
-            {"Vietnamese", "vi"}
+            {"Vietnamese", "vi"},
+            {"Custom", "??" }
 
 
             };

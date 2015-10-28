@@ -1,4 +1,5 @@
 ﻿using IGTLocalizer.Model;
+using IGTLocalizer.Widgets;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
@@ -92,10 +93,17 @@ namespace IGTLocalizer
 
         private void TranslateFile_Button(Object sender, RoutedEventArgs e)
         {
+            string perferedLang = toTranslateLang.ls.selectLang;
+            if (toTranslateLang.ls.selectLang.Equals("??"))
+            {
+                SelectLangPopup question = new SelectLangPopup();
+                perferedLang = question.selectedLang;
+            }
+            else 
             foreach(string p in properties)
             {
                 fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
+                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, perferedLang);
 
                 JSONValue eValue = new JSONValue(false);
                 eValue.myValue.Text = fileContentObject["default"][p].ToString();
@@ -203,20 +211,28 @@ namespace IGTLocalizer
 
         private void TranslateFile(object sender, ExecutedRoutedEventArgs e)
         {
-            string[] TranslatedValues = new String[properties.Count];
-            for (int i = 0; i < TranslatedValues.Length; i++)
+            string selectedLanguage = toTranslateLang.ls.selectLang;
+            if (selectedLanguage.Equals("??"))
             {
-                TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+                SelectLangPopup question = new SelectLangPopup();
+                question.ShowDialog();
+                selectedLanguage = question.selectedLang;
             }
-            TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, toTranslateLang.ls.selectLang);
+                string[] TranslatedValues = new String[properties.Count];
+                for (int i = 0; i < TranslatedValues.Length; i++)
+                {
+                    TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+                }
+                TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, selectedLanguage);
+
+                StkEditableValues.Children.Clear();
+                foreach (string p in TranslatedValues)
+                {
+                    JSONValue eValue = new JSONValue(false);
+                    eValue.myValue.Text = p;
+                    StkEditableValues.Children.Add(eValue);
+                }
             
-            StkEditableValues.Children.Clear();
-            foreach (string p in TranslatedValues)
-            {
-                JSONValue eValue = new JSONValue(false);
-                eValue.myValue.Text = p;
-                StkEditableValues.Children.Add(eValue);
-            }
         }
 
         private void AddNewUser(Object sender, EventArgs e)
