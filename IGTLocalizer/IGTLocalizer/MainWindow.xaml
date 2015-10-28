@@ -35,7 +35,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button FontWeight="Bold" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Open File" Click="OpenFile_Button" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <StackPanel Grid.Column="1">
+            <StackPanel Name="RadioButtons" Grid.Column="1">
                 <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="newUserRadioButton" Content="Add New Lottery" Click="AddNewUser"/>
                 <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="updateUserRadioButton" Content="Update Existing Lottery" Click="UpdateUser" />
                 <RadioButton Margin="15,10,0,0" FontSize="14" x:Name="addLanguageRadioButton" Content="Add New Laguage" Click="AddNewLanguage" />

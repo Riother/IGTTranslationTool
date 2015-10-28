@@ -39,6 +39,7 @@ namespace IGTLocalizer
         public MainWindow()
         {
             InitializeComponent();
+            RadioButtons.Visibility = Visibility.Hidden;
             translator = new TranslationCaller();
             custIDs = new ObservableCollection<string>();
         }
@@ -51,6 +52,7 @@ namespace IGTLocalizer
             openfileDialog.Filter = "JSON Files (*.json)|*.json";
             if (openfileDialog.ShowDialog() == true)
             {
+                RadioButtons.Visibility = Visibility.Visible;
                 custIDs.Clear();
                 string fullPath = openfileDialog.FileName;
                 currDir = System.IO.Path.GetDirectoryName(fullPath);
@@ -117,6 +119,13 @@ namespace IGTLocalizer
 
         private void SaveFile_Button(Object sender, RoutedEventArgs e) {
 
+            //add new
+            if (radioSelection == 1 && clients.Contains(addCustID.CustomerID.Text))
+            {
+                ShowDuplicateClientError();
+                return;
+            }
+
             Stream myStream;
             SaveFileDialog saveFile = new SaveFileDialog();
 
@@ -126,7 +135,8 @@ namespace IGTLocalizer
             {
                 if ((myStream = saveFile.OpenFile()) != null)
                 {
-                    string json = GetEditedFileContent();
+                    string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();//only need to input 
+                    string json = GetEditedFileContent(currEditedClientName);
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
                     myStream.Write(bytes, 0, bytes.Length);
                     myStream.Flush();
@@ -135,38 +145,55 @@ namespace IGTLocalizer
             }
         }
 
-        private string GetEditedFileContent() {
+        private string GetEditedFileContent(string currClientName) {
             string quote = "\"";
 
             string json = "{";
-            string newCustName = null;
-            foreach (string c in clients)
+            foreach (string clientName in clients)
             {
-                json += "\n\t" + quote + c + quote + ":{";
-                foreach (string p in properties)
+                json += "\n\t" + quote + clientName + quote + ":{";
+                foreach (string propName in properties)
                 {
-                    json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text.Replace("\n","\\n") + quote + ",";
+                    //if saving current user (need to save the edited values)
+                    string value = (clientName.ToLower().Equals(currClientName.ToLower())) ? ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text
+                        : fileContentObject[clientName][propName].ToString();
+                    json += "\n\t\t" 
+                        + quote
+                            + propName 
+                        + quote + ": "
+                            + quote + value.Replace("\n", "\\n") + quote + ",";
+                }
+                json += "\n\t},\n";
+
+            }
+
+            //new customer
+            if (radioSelection == 1)
+            {
+                string newCustName = addCustID.CustomerID.Value.ToString();
+                clients.Add(newCustName);
+                json += "\n\t"
+                    + quote
+                        + newCustName
+                    + quote + ":{";
+                foreach (string propName in properties)
+                {
+                    json += "\n\t\t" 
+                        + quote 
+                            + propName 
+                        + quote + ": " 
+                            + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text.Replace("\n", "\\n") + quote + ",";
                 }
                 json += "\n\t}\n";
 
-                if (radioSelection == 1 && clients.IndexOf(c) == (clients.Count - 1))
-                {
-                    newCustName = addCustID.CustomerID.Value.ToString();
+            }
 
-                    json += "\n\t" + quote + newCustName + quote + ":{";
-                    foreach (string p in properties)
-                    {
-                        json += "\n\t\t" + quote + p + quote + ": " + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(p)]).myValue.Text.Replace("\n","\\n") + quote + ",";
-                    }
-                    json += "\n\t}\n";
-                }
-            }
-            if (newCustName != null)
-            {
-                clients.Add(newCustName);
-            }
             json += "}";
             return json;
+        }
+
+        private void ShowDuplicateClientError() {
+            MessageBox.Show("Sorry, there is a customer already by that id.  please choose another one.");            
         }
 
         private void CanTranslateFile(object sender, CanExecuteRoutedEventArgs e)
@@ -194,9 +221,13 @@ namespace IGTLocalizer
 
         private void AddNewUser(Object sender, EventArgs e)
         {
+            
             radioSelection = 1;
             addCustID = new AddCustomer();
+            
             AddUserControlStep3(addCustID);
+            populateLeftSide("default");
+            populateRightSide("default");
         }
 
         private void UpdateUser(Object sender, EventArgs e)
@@ -217,20 +248,15 @@ namespace IGTLocalizer
                 handler(this, EventArgs.Empty);
             }
         }
-        //private void UpdateCust_DropDownClosed(object sender, EventArgs e)
-        //{
-        //    if(updateCust  != null)
-        //    {
-        //        //string id = updateCust.ItemSelected;
-        //        populateLeftSide(id);
-        //    }
-        //}
 
         private void AddNewLanguage(Object sender, EventArgs e)
         {
             radioSelection = 2;
             toTranslateLang = new AddLanguage();
             AddUserControlStep3(toTranslateLang);
+            populateLeftSide("default");
+            populateRightSide("default");
+
         }
 
         private void AddUserControlStep3(UserControl uc)
