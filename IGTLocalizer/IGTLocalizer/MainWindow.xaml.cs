@@ -140,12 +140,6 @@ namespace IGTLocalizer
                     myStream.Flush();
                     myStream.Close();
 
-                    if (currEditedClientName.Equals(""))
-                    {
-                        currEditedClientName = defaultClient;
-                    }
-                    ReloadCurrentLottery(currEditedClientName);
-
                     //if they save it to a new file, open that file
                     if (radioSelection == 2)
                     {
@@ -173,6 +167,11 @@ namespace IGTLocalizer
                         addCustID = new AddCustomer();
                         AddUserControlStep3(addCustID);
                     }
+                    else if (currEditedClientName.Equals(""))
+                    {
+                        currEditedClientName = defaultClient;
+                        ReloadCurrentLottery(currEditedClientName);
+                    }
                     
                 }
 
@@ -185,48 +184,6 @@ namespace IGTLocalizer
             }
         }
 
-        private void ReloadCurrentLottery(string currLotteryName)
-        {
-            //reload saved values
-            String content = File.ReadAllText(fullPath);
-            fileContentToken = JToken.Parse(content);
-            fileContentObject = JObject.Parse(content);
-
-            JObject outer = fileContentToken.Value<JObject>();
-            JObject inner = fileContentToken[defaultClient].Value<JObject>();
-
-            clients = outer.Properties().Select(p => p.Name).ToList();
-            properties = inner.Properties().Select(p => p.Name).ToList();
-
-            StkJSONProperties.Children.Clear();
-            foreach (string p in properties)
-            {
-                JSONProperty prop = new JSONProperty();
-                prop.property.Content = p;
-                StkJSONProperties.Children.Add(prop);
-            }
-            populateLeftSide(currLotteryName);
-            populateRightSide(currLotteryName);
-        }
-
-        private string GetTranslatedFileContent()
-        {
-            string quote = "\"";
-            string json = "{" + "\n\t" + quote + defaultClient + quote + ":{";
-
-            foreach (string propName in properties)
-            {
-                //if saving current user (need to save the edited values)
-                string value = ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text;
-                json += "\n\t\t"
-                    + quote
-                        + propName
-                    + quote + ": "
-                        + quote + value.Replace("\n", "\\n") + quote + ",";
-            }
-            json += "\n\t},\n}";
-            return json;
-        }
 
         private void ReloadCurrentLottery(string currLotteryName) {
             //reload saved values
@@ -263,7 +220,7 @@ namespace IGTLocalizer
                     + quote
                         + propName
                     + quote + ": "
-                        + quote + value.Replace("\n", "\\n") + quote + ",";
+                        + quote + value.Replace("\n", "\\n").Replace("\"", "\\\\\"") + quote + ",";
             }
             json += "\n\t},\n}";
             return json;
