@@ -35,6 +35,7 @@ namespace IGTLocalizer
         private AddCustomer addCustID;
         UpdateCustomer updateCust;
         public event EventHandler ChangeCustomerContent;
+        string defaultClient = "default";
 
         public MainWindow()
         {
@@ -44,6 +45,7 @@ namespace IGTLocalizer
             custIDs = new ObservableCollection<string>();
         }
 
+        string fullPath = "";
         string currDir = "";
         string fileName = "";//without extension
         private void OpenFile_Button(Object sender, RoutedEventArgs e)
@@ -54,9 +56,10 @@ namespace IGTLocalizer
             {
                 RadioButtons.Visibility = Visibility.Visible;
                 custIDs.Clear();
-                string fullPath = openfileDialog.FileName;
+                fullPath = openfileDialog.FileName;
                 currDir = System.IO.Path.GetDirectoryName(fullPath);
                 fileName = System.IO.Path.GetFileNameWithoutExtension(fullPath);
+                
                 String content = File.ReadAllText(fullPath);            
                 fileContentToken = JToken.Parse(content);
                 fileContentObject = JObject.Parse(content);
@@ -67,7 +70,7 @@ namespace IGTLocalizer
                 {
                    custIDs.Add(outer.Children().ElementAt(i).Path);
                 }
-                JObject inner = fileContentToken["default"].Value<JObject>();
+                JObject inner = fileContentToken[defaultClient].Value<JObject>();
 
                 clients = outer.Properties().Select(p => p.Name).ToList();
                 properties = inner.Properties().Select(p => p.Name).ToList();
@@ -79,9 +82,7 @@ namespace IGTLocalizer
                     prop.property.Content = p;
                     StkJSONProperties.Children.Add(prop);
                 }
-                populateLeftSide("default");
-
-                //fileViewer.Text = content;
+                populateLeftSide(defaultClient);
             }
         }
 
@@ -94,28 +95,14 @@ namespace IGTLocalizer
         {
             foreach(string p in properties)
             {
-                fileContentObject["default"][p] =
-                    translator.TranslateLine(fileContentObject["default"][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
+                fileContentObject[defaultClient][p] =
+                    translator.TranslateLine(fileContentObject[defaultClient][p].ToString(), startingLangCode, toTranslateLang.ls.selectLang);
 
                 JSONValue eValue = new JSONValue(false);
-                eValue.myValue.Text = fileContentObject["default"][p].ToString();
+                eValue.myValue.Text = fileContentObject[defaultClient][p].ToString();
                 StkEditableValues.Children.Add(eValue);
             }
-            //foreach(string client in clients)
-            //{
-            //    foreach(string prop in properties)
-            //    {
-            //        fileContentObject[client][prop] = 
-            //            translator.TranslateLine(fileContentObject[client][prop].ToString(), startingLangCode, translatedLangCode);
-            //    }
-            //}
-
-            //fileEditor.Text = fileContentObject.ToString();
         }
-        //key and a value ( value can be an array ) 
-            //key is surrounded by quotes
-        //object is surrounded by {}
-
 
         private void SaveFile_Button(Object sender, RoutedEventArgs e) {
 
@@ -135,14 +122,92 @@ namespace IGTLocalizer
             {
                 if ((myStream = saveFile.OpenFile()) != null)
                 {
-                    string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();//only need to input 
-                    string json = GetEditedFileContent(currEditedClientName);
+
+                    string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();
+                    string json = (radioSelection == 2) ? GetTranslatedFileContent() : GetEditedFileContent(currEditedClientName);
+
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
                     myStream.Write(bytes, 0, bytes.Length);
                     myStream.Flush();
                     myStream.Close();
+
+                    //if they save it to a new file, open that file
+                    if (radioSelection == 2)
+                    {
+                        fullPath = saveFile.FileName;
+                        currDir = System.IO.Path.GetDirectoryName(fullPath);
+                        fileName = System.IO.Path.GetFileNameWithoutExtension(fullPath);
+                        clients.Clear();
+                        clients.Add(defaultClient);
+                        custIDs.Clear();
+                        String content = File.ReadAllText(fullPath);
+                        fileContentToken = JToken.Parse(content);
+                        fileContentObject = JObject.Parse(content);
+
+                        JObject outer = fileContentToken.Value<JObject>();
+
+                        for (int i = 0; i < outer.Count; i++)
+                        {
+                            custIDs.Add(outer.Children().ElementAt(i).Path);
+                        }
+                        updateCust = new UpdateCustomer(this);
+                        updateCust.UpdateCustBox.ItemsSource = custIDs;
+                        updateCust.UpdateCustBox.SelectedIndex = 0;
+                        
+                        AddUserControlStep3(updateCust);
+
+                        addCustID = new AddCustomer();
+                        AddUserControlStep3(addCustID);
+                    }
+                    else if (currEditedClientName.Equals(""))
+                    {
+                        currEditedClientName = defaultClient;
+                        ReloadCurrentLottery(currEditedClientName);
+                    }
+                    
                 }
             }
+        }
+
+        private void ReloadCurrentLottery(string currLotteryName) {
+            //reload saved values
+            String content = File.ReadAllText(fullPath);
+            fileContentToken = JToken.Parse(content);
+            fileContentObject = JObject.Parse(content);
+
+            JObject outer = fileContentToken.Value<JObject>();
+            JObject inner = fileContentToken[defaultClient].Value<JObject>();
+
+            clients = outer.Properties().Select(p => p.Name).ToList();
+            properties = inner.Properties().Select(p => p.Name).ToList();
+
+            StkJSONProperties.Children.Clear();
+            foreach (string p in properties)
+            {
+                JSONProperty prop = new JSONProperty();
+                prop.property.Content = p;
+                StkJSONProperties.Children.Add(prop);
+            }
+            populateLeftSide(currLotteryName);
+            populateRightSide(currLotteryName);
+        }
+
+        private string GetTranslatedFileContent() {
+            string quote = "\"";
+            string json = "{" + "\n\t" + quote + defaultClient + quote + ":{";
+            
+            foreach (string propName in properties)
+            {
+                //if saving current user (need to save the edited values)
+                string value = ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text;
+                json += "\n\t\t"
+                    + quote
+                        + propName
+                    + quote + ": "
+                        + quote + value.Replace("\n", "\\n") + quote + ",";
+            }
+            json += "\n\t},\n}";
+            return json;
         }
 
         private string GetEditedFileContent(string currClientName) {
@@ -206,7 +271,7 @@ namespace IGTLocalizer
             string[] TranslatedValues = new String[properties.Count];
             for (int i = 0; i < TranslatedValues.Length; i++)
             {
-                TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+                TranslatedValues[i] = fileContentObject[defaultClient][properties[i]].ToString();
             }
             TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, toTranslateLang.ls.selectLang);
             
@@ -221,13 +286,11 @@ namespace IGTLocalizer
 
         private void AddNewUser(Object sender, EventArgs e)
         {
-            
             radioSelection = 1;
             addCustID = new AddCustomer();
-            
             AddUserControlStep3(addCustID);
-            populateLeftSide("default");
-            populateRightSide("default");
+            populateLeftSide(defaultClient);
+            populateRightSide(defaultClient);
         }
 
         private void UpdateUser(Object sender, EventArgs e)
@@ -254,8 +317,8 @@ namespace IGTLocalizer
             radioSelection = 2;
             toTranslateLang = new AddLanguage();
             AddUserControlStep3(toTranslateLang);
-            populateLeftSide("default");
-            populateRightSide("default");
+            populateLeftSide(defaultClient);
+            populateRightSide(defaultClient);
 
         }
 
