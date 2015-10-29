@@ -60,7 +60,6 @@ namespace IGTLocalizer
                 fullPath = openfileDialog.FileName;
                 currDir = System.IO.Path.GetDirectoryName(fullPath);
                 fileName = System.IO.Path.GetFileNameWithoutExtension(fullPath);
-
                 String content = File.ReadAllText(fullPath);
                 fileContentToken = JToken.Parse(content);
                 fileContentObject = JObject.Parse(content);
@@ -141,12 +140,12 @@ namespace IGTLocalizer
                     myStream.Flush();
                     myStream.Close();
 
-
                     if (currEditedClientName.Equals(""))
                     {
                         currEditedClientName = defaultClient;
                     }
                     ReloadCurrentLottery(currEditedClientName);
+
                     //if they save it to a new file, open that file
                     if (radioSelection == 2)
                     {
@@ -169,7 +168,6 @@ namespace IGTLocalizer
                         updateCust = new UpdateCustomer(this);
                         updateCust.UpdateCustBox.ItemsSource = custIDs;
                         updateCust.UpdateCustBox.SelectedIndex = 0;
-
                         AddUserControlStep3(updateCust);
 
                         addCustID = new AddCustomer();
@@ -230,8 +228,48 @@ namespace IGTLocalizer
             return json;
         }
 
-        private string GetEditedFileContent(string currClientName)
-        {
+        private void ReloadCurrentLottery(string currLotteryName) {
+            //reload saved values
+            String content = File.ReadAllText(fullPath);
+            fileContentToken = JToken.Parse(content);
+            fileContentObject = JObject.Parse(content);
+
+            JObject outer = fileContentToken.Value<JObject>();
+            JObject inner = fileContentToken[defaultClient].Value<JObject>();
+
+            clients = outer.Properties().Select(p => p.Name).ToList();
+            properties = inner.Properties().Select(p => p.Name).ToList();
+
+            StkJSONProperties.Children.Clear();
+            foreach (string p in properties)
+            {
+                JSONProperty prop = new JSONProperty();
+                prop.property.Content = p;
+                StkJSONProperties.Children.Add(prop);
+            }
+            populateLeftSide(currLotteryName);
+            populateRightSide(currLotteryName);
+        }
+
+        private string GetTranslatedFileContent() {
+            string quote = "\"";
+            string json = "{" + "\n\t" + quote + defaultClient + quote + ":{";
+            
+            foreach (string propName in properties)
+            {
+                //if saving current user (need to save the edited values)
+                string value = ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text;
+                json += "\n\t\t"
+                    + quote
+                        + propName
+                    + quote + ": "
+                        + quote + value.Replace("\n", "\\n") + quote + ",";
+            }
+            json += "\n\t},\n}";
+            return json;
+        }
+
+        private string GetEditedFileContent(string currClientName) {
             string quote = "\"";
 
             string json = "{";
@@ -302,7 +340,7 @@ namespace IGTLocalizer
             string[] TranslatedValues = new String[properties.Count];
             for (int i = 0; i < TranslatedValues.Length; i++)
             {
-                TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+                TranslatedValues[i] = fileContentObject[defaultClient][properties[i]].ToString();
             }
             TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, selectedLanguage);
 
