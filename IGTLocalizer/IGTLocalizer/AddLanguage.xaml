@@ -11,9 +11,9 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label FontSize="14" VerticalAlignment="Center" Content="Language:" Margin="15,0,5,0"/>
+            <Label FontSize="14" VerticalAlignment="Center" Content="Language:" Margin="15,0,5,0" Name="LblTranslation"/>
             <Grid Height="28" Margin="100,0,0,0" x:Name="myGrid"/>
-            <Button Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Command="ApplicationCommands.New"/>
+            <Button Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Background="#007CAA" Foreground="White" Height="50" Width="100" Content="Translate" Command="ApplicationCommands.New" Name="BtnTranslate"/>
         </Grid>
     </Grid>
 </UserControl>

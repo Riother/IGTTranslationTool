@@ -19,18 +19,18 @@ namespace IGTLocalizer.Widgets
     /// </summary>
     public partial class SelectLangPopup : Window
     {
-        private AddLanguage langBox;
+        private LanguageSelector langBox;
         public  string selectedLang { get; private set; }
         public SelectLangPopup()
         {
             InitializeComponent();
-            langBox = new AddLanguage();
+            langBox = new LanguageSelector();
             langCombo.Children.Add(langBox);
         }
 
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
-            selectedLang = langBox.ls.selectLang;
+            selectedLang = langBox.selectLang;
             this.DialogResult = true;
         }
 
