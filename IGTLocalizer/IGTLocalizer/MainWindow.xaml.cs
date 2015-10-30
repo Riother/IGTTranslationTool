@@ -139,9 +139,8 @@ namespace IGTLocalizer
             {
                 if ((myStream = saveFile.OpenFile()) != null)
                 {
-
                     string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();
-                    string json = (radioSelection == 2) ? GetTranslatedFileContent() : FinalizeOutput(currEditedClientName);
+                    string json = (radioSelection == 2) ? GetTranslatedFileContent() : GetEditedFileContent(currEditedClientName);
 
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
                     myStream.Write(bytes, 0, bytes.Length);
@@ -251,7 +250,7 @@ namespace IGTLocalizer
                     + quote
                         + propName
                     + quote + ": "
-                        + quote + value.Replace("\n", "\\n").Replace("\"", "\\\\\"") + quote + ",";
+                        + quote + value.Replace("\n", "\\n").Replace("\"", "\"") + quote + ",";
             }
             json += "\n\t},\n}";
             return json;
@@ -273,7 +272,7 @@ namespace IGTLocalizer
                         + quote
                             + propName
                         + quote + ": "
-                            + quote + value.Replace("\n", "\\n") + quote + ",";
+                            + quote + value.Replace("\n", "\\n").Replace("\"", "\"") + quote + ",";
                 }
                 json += "\n\t},\n";
 
