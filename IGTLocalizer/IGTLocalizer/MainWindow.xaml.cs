@@ -83,7 +83,15 @@ namespace IGTLocalizer
                     StkJSONProperties.Children.Add(prop);
                 }
                 populateLeftSide(defaultClient);
+                DetectLanguage(fileContentObject["default"].ToString());
+                //fileViewer.Text = content;
             }
+        }
+
+        private void DetectLanguage(string texts)
+        {
+            startingLangCode = translator.Detect(texts.ToString());
+            Console.Write(startingLangCode);
         }
 
         string startingLangCode = "en";

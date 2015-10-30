@@ -39,15 +39,17 @@ namespace IGTLocalizer.Model
             return translatedLines;
         }
 
-        public DetectedLanguage Detect(string line)
+        public string Detect(string line)
         {
-            return JsonConvert.DeserializeObject<DetectedLanguage>(GetTranslationFromRequest(line, null, null, true));
+            string[] test = GetTranslationFromRequest(line, null, null, true).Split('\"');
+            return test[3];
+            //return JsonConvert.DeserializeObject<DetectedLanguage>(GetTranslationFromRequest(line, null, null, true));
         }
 
         //generates a translation request and returns the response
         private HttpWebResponse GetTranslationResponse(string text, string langFrom, string langTo, bool detect)
         {
-            HttpWebRequest request = (detect) ? (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/detect?key=" + key + "" + text) :
+            HttpWebRequest request = (detect) ? (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/detect?key=" + key + "&text=" + text) :
                 (HttpWebRequest)HttpWebRequest.Create("https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + key + "&lang=" + langFrom + "-" + langTo + "" + text);
             request.Method = "GET";
             request.AllowAutoRedirect = true;
