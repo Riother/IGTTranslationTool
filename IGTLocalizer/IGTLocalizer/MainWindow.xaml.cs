@@ -37,7 +37,7 @@ namespace IGTLocalizer
         UpdateCustomer updateCust;
         public event EventHandler ChangeCustomerContent;
         string defaultClient = "default";
-        string startingLangCode = "en";
+        string startingLangCode;
 
         public MainWindow()
         {
@@ -141,14 +141,14 @@ namespace IGTLocalizer
                 {
                     string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();
                     string json = (radioSelection == 2) ? GetTranslatedFileContent() : GetEditedFileContent(currEditedClientName);
-
+                    
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
                     myStream.Write(bytes, 0, bytes.Length);
                     myStream.Flush();
                     myStream.Close();
 
                     //if they save it to a new file, open that file
-                    if (radioSelection == 2)
+                    if (radioSelection != 0)
                     {
                         fullPath = saveFile.FileName;
                         currDir = System.IO.Path.GetDirectoryName(fullPath);
@@ -174,11 +174,12 @@ namespace IGTLocalizer
                         addCustID = new AddCustomer();
                         AddUserControlStep3(addCustID);
                     }
-                    else if (currEditedClientName.Equals(""))
+                    
+                    if (currEditedClientName.Equals(""))
                     {
                         currEditedClientName = defaultClient;
-                        ReloadCurrentLottery(currEditedClientName);
                     }
+                    ReloadCurrentLottery(currEditedClientName);
                     
                 }
 
@@ -295,7 +296,7 @@ namespace IGTLocalizer
                         + quote + ": "
                             + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text.Replace("\n", "\\n") + quote + ",";
                 }
-                json += "\n\t}\n";
+                json += "\n\t},\n";
 
             }
 
