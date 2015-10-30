@@ -133,7 +133,7 @@ namespace IGTLocalizer
                 {
 
                     string currEditedClientName = (updateCust == null) ? "" : updateCust.UpdateCustBox.SelectedValue.ToString();
-                    string json = (radioSelection == 2) ? GetTranslatedFileContent() : GetEditedFileContent(currEditedClientName);
+                    string json = (radioSelection == 2) ? GetTranslatedFileContent() : FinalizeOutput(currEditedClientName);
 
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
                     myStream.Write(bytes, 0, bytes.Length);
@@ -183,7 +183,30 @@ namespace IGTLocalizer
                 Step3.Children.Clear();
             }
         }
+        private string FinalizeOutput(string currClientName)
+        {
+            string quote = "\"";
 
+            string json = "{";
+            foreach (string clientName in clients)
+            {
+                json += "\n\t" + quote + clientName + quote + ":{";
+                foreach (string propName in properties)
+                {
+                    //if saving current user (need to save the edited values)
+                    string value = (clientName.ToLower().Equals(currClientName.ToLower())) ? ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text
+                        : fileContentObject[clientName][propName].ToString();
+                    json += "\n\t\t"
+                        + quote
+                            + propName
+                        + quote + ": "
+                            + quote + value.Replace("\n", "\\n") + quote + ",";
+                }
+                json += "\n\t},\n";
+
+            }
+            return json;
+        } 
 
         private void ReloadCurrentLottery(string currLotteryName) {
             //reload saved values
@@ -293,22 +316,41 @@ namespace IGTLocalizer
                 question.ShowDialog();
                 selectedLanguage = question.selectedLang;
 
-            }
-            string[] TranslatedValues = new String[properties.Count];
-            for (int i = 0; i < TranslatedValues.Length; i++)
-            {
-                TranslatedValues[i] = fileContentObject[defaultClient][properties[i]].ToString();
-            }
-            TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, selectedLanguage);
+                if (selectedLanguage != null && !selectedLanguage.Equals("??"))
+                {
+                    string[] TranslatedValues = new String[properties.Count];
+                    for (int i = 0; i < TranslatedValues.Length; i++)
+                    {
+                        TranslatedValues[i] = fileContentObject[defaultClient][properties[i]].ToString();
+                    }
+                    TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, selectedLanguage);
 
-            StkEditableValues.Children.Clear();
-            foreach (string p in TranslatedValues)
-            {
-                JSONValue eValue = new JSONValue(false);
-                eValue.myValue.Text = p;
-                StkEditableValues.Children.Add(eValue);
+                    StkEditableValues.Children.Clear();
+                    foreach (string p in TranslatedValues)
+                    {
+                        JSONValue eValue = new JSONValue(false);
+                        eValue.myValue.Text = p.Replace("\\n", "\n");
+                        StkEditableValues.Children.Add(eValue);
+                    }
+                }
             }
+                 else if (!selectedLanguage.Equals("??"))
+            {
+                string[] TranslatedValues = new String[properties.Count];
+                for (int i = 0; i < TranslatedValues.Length; i++)
+                {
+                    TranslatedValues[i] = fileContentObject["default"][properties[i]].ToString();
+                }
+                TranslatedValues = translator.TranslateMultiLines(TranslatedValues, startingLangCode, selectedLanguage);
 
+                StkEditableValues.Children.Clear();
+                foreach (string p in TranslatedValues)
+                {
+                    JSONValue eValue = new JSONValue(false);
+                    eValue.myValue.Text = p.Replace("\\n", "\n");
+                    StkEditableValues.Children.Add(eValue);
+                }
+            }
         }
 
         private void AddNewUser(Object sender, EventArgs e)
