@@ -37,6 +37,7 @@ namespace IGTLocalizer
         UpdateCustomer updateCust;
         public event EventHandler ChangeCustomerContent;
         string defaultClient = "default";
+        string startingLangCode = "en";
 
         public MainWindow()
         {
@@ -94,7 +95,6 @@ namespace IGTLocalizer
             Console.Write(startingLangCode);
         }
 
-        string startingLangCode = "en";
         //string translatedLangCode = "es";
         int radioSelection; //0 = update, 1 = add customer, 2 = add lang
 
