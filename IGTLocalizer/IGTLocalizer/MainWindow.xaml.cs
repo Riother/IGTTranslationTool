@@ -160,6 +160,7 @@ namespace IGTLocalizer
                     }
 
                     ReloadCurrentLottery(currEditedClientName);
+                    StkEditableValues.Children.Clear();
                 }
 
                 foreach (RadioButton child in RadioButtons.Children)
@@ -182,14 +183,19 @@ namespace IGTLocalizer
             clients = outer.Properties().Select(p => p.Name).ToList();
             //properties = inner.Properties().Select(p => p.Name).ToList();
 
-            //StkJSONProperties.Children.Clear();
-            //foreach (string p in properties)
-            //{
-            //    JSONProperty prop = new JSONProperty();
-            //    prop.property.Content = p;
-            //    StkJSONProperties.Children.Add(prop);
-            //}
+            StkJSONProperties.Children.Clear();
+            foreach (string p in properties)
+            {
+                JSONProperty prop = new JSONProperty();
+                prop.property.Content = p;
+                StkJSONProperties.Children.Add(prop);
+            }
             ClientChanged(currLotteryName);
+            string languageTest = "";
+            foreach (string p in properties) {
+                languageTest += fileContentObject[DEFAULT_CLIENT][p] + "\n";
+            }
+            startingLangCode = translator.Detect(languageTest);
         }
 
         private string GetTranslatedFileContent()
