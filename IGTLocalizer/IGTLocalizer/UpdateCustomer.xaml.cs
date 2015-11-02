@@ -34,7 +34,7 @@ namespace IGTLocalizer
         private void UpdateCustBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(UpdateCustBox.SelectedValue != null)
-            parent.clientChanged(UpdateCustBox.SelectedValue.ToString());
+            parent.ClientChanged(UpdateCustBox.SelectedValue.ToString());
         }
 
         //public event PropertyChangedEventHandler PropertyChanged;
