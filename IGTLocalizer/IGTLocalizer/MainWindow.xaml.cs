@@ -212,7 +212,7 @@ namespace IGTLocalizer
                     + quote
                         + propName
                     + quote + ": "
-                        + quote + value.Replace("\n", "\\n").Replace("\"", singleQuote.ToString()) + quote + ",";
+                        + quote + value.Replace("\n", "\\n").Replace("\"",singleQuote.ToString()) + quote + ",";
             }
             json += "\n\t},\n}";
             return json;
@@ -222,7 +222,7 @@ namespace IGTLocalizer
         {
             string quote = "\"";
             char singleQuote = '"';
-
+            char slash = '\\';
             string json = "{";
             foreach (string clientName in clients)
             {
@@ -232,11 +232,24 @@ namespace IGTLocalizer
                     //if saving current user (need to save the edited values)
                     string value = (clientName.ToLower().Equals(currClientName.ToLower())) ? ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text
                         : fileContentObject[clientName][propName].ToString();
-                    json += "\n\t\t"
-                        + quote
-                            + propName
-                        + quote + ": "
-                            + quote + value.Replace("\n", "\\n").Replace("\"", singleQuote.ToString()) + quote + ",";
+
+                    if (radioSelection == RadioSelection.Add 
+                        || radioSelection == RadioSelection.Update)
+                    {
+                        json += "\n\t\t"
+                            + quote
+                                + propName
+                            + quote + ": "
+                                + quote + value.Replace("\n", "\\n").Replace("\"",slash + singleQuote.ToString()) + quote + ",";
+                    }
+                    else
+                    {
+                        json += "\n\t\t"
+                            + quote
+                                + propName
+                            + quote + ": "
+                                + quote + value.Replace("\n", "\\n").Replace("\"",singleQuote.ToString()) + quote + ",";
+                    }
                 }
                 json += "\n\t},\n";
 
@@ -247,6 +260,7 @@ namespace IGTLocalizer
             {
                 string newCustName = addCustID.CustomerID.Value.ToString();
                 clients.Add(newCustName);
+                
                 json += "\n\t"
                     + quote
                         + newCustName
@@ -257,7 +271,7 @@ namespace IGTLocalizer
                         + quote
                             + propName
                         + quote + ": "
-                            + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text.Replace("\n", "\\n") + quote + ",";
+                            + quote + ((JSONValue)StkEditableValues.Children[properties.IndexOf(propName)]).myValue.Text.Replace("\n", "\\n").Replace("\"", slash+singleQuote.ToString()) + quote + ",";
                 }
                 json += "\n\t},\n";
 
