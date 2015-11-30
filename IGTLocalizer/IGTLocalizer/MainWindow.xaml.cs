@@ -109,10 +109,19 @@ namespace IGTLocalizer
         private void SaveFile_Button(object sender, RoutedEventArgs e)
         {
             //add new
-            if (radioSelection == RadioSelection.Add && clients.Contains(addCustID.CustomerID.Text))
+            if ( radioSelection == RadioSelection.Add )
             {
-                ShowDuplicateClientError();
-                return;
+                if (clients.Contains(addCustID.CustomerID.Text)) {
+                    ShowDuplicateClientError();
+                    return;
+                }
+
+                int val;
+                if (!Int32.TryParse(addCustID.CustomerID.Text, out val))
+                {
+                    MessageBox.Show("Sorry, the lottery id must be a number");
+                    return;
+                }
             }
 
             Stream myStream;
@@ -163,6 +172,7 @@ namespace IGTLocalizer
                     StkEditableValues.Children.Clear();
                 }
 
+                //Clear Radio Buttons and user controls
                 foreach (RadioButton child in RadioButtons.Children)
                 {
                     child.IsChecked = false;
